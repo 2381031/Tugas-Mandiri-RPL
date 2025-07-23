@@ -1,32 +1,31 @@
 @startuml
 title Activity Diagram - Pembayaran Pajak Online
 skin rose
+
 |Pengguna|
 start
 :Login ke sistem;
 :Memilih menu Pembayaran Pajak;
-:Input data pajak (jenis, NIK, tahun, dll);
+:Input data pajak (jenis pajak, NIK, tahun, dll);
 
 |Frontend|
 :Validasi format input;
 if (Input valid?) then (Ya)
   |Backend|
   :Verifikasi NIK terdaftar?;
-  :Ambil & validasi data tagihan?;
+  :Validasi data tagihan?;
   if (Data valid?) then (Ya)
-    if (Tagihan > 10 jt?) then (Ya)
-      |Sistem 2FA|
+    if (Tagihan > 10 juta?) then (Ya)
       :Verifikasi identitas tambahan (OTP/dokumen);
-      if (2FA sukses?) then (Ya)
-        |Backend|
-        :Tampilkan ringkasan tagihan & metode bayar;
-      else (Gagal)
+      if (Verifikasi sukses?) then (Ya)
+        :Tampilkan ringkasan tagihan & metode pembayaran;
+      else (Tidak)
         |Frontend|
-        :Notifikasi verifikasi gagal; sarankan ulangi;
-        stop
+        :Notifikasi verifikasi gagal, sarankan ulangi;
+        -> :Login ke sistem;
       endif
     else (Tidak)
-      :Tampilkan ringkasan tagihan & metode bayar;
+      :Tampilkan ringkasan tagihan & metode pembayaran;
     endif
 
     |Pengguna|
@@ -38,20 +37,22 @@ if (Input valid?) then (Ya)
     if (Pembayaran sukses?) then (Ya)
       :Catat transaksi;
       :Kirim bukti pembayaran (email);
-      stop
     else (Gagal)
       |Frontend|
-      :Notifikasi gagal; sarankan ulangi;
-      stop
+      :Notifikasi pembayaran gagal, sarankan ulangi;
+      -> :Login ke sistem;
     endif
   else (Tidak)
     |Frontend|
     :Tampilkan error data (NIK/Tagihan tidak valid);
-    stop
+    -> :Login ke sistem;
   endif
 else (Tidak)
   |Frontend|
   :Tampilkan error format input;
-  stop
+  -> :Login ke sistem;
 endif
+
+|Frontend|
+stop
 @enduml

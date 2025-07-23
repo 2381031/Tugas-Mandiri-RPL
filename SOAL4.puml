@@ -1,6 +1,7 @@
 @startuml
 title Activity Diagram - Transaksi E-Wallet >5jt dengan 2FA
 skin rose
+
 |Pengguna|
 start
 :Mulai pembayaran (> Rp5 jt);
@@ -19,11 +20,12 @@ if (Keduanya valid?) then (Ya)
   :Catat transaksi;
   |Frontend|
   :Notifikasi sukses;
-  stop
 else (Tidak)
   :Catat log kegagalan (audit/keamanan);
   |Frontend|
   :Notifikasi transaksi dibatalkan;
-  stop
 endif
+
+|Frontend|
+stop
 @enduml

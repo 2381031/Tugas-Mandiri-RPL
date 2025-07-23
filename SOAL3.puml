@@ -1,40 +1,37 @@
 @startuml
-title Activity Diagram - Pembayaran Merchant via E-Wallet (QR)
 skin rose
 |Pengguna|
 start
-:Buka aplikasi & Scan QR Merchant;
+: Buka aplikasi & Scan QR Merchant;
+: Pilih sumber dana (saldo / reward / kartu terhubung);
 
 |Frontend|
-:Tampilkan detail transaksi (merchant, total tagihan);
-
-|Pengguna|
-:Pilih sumber dana (saldo / reward / kartu terhubung);
+: Tampilkan detail transaksi (merchant, total tagihan);
 
 |Backend|
-:Verifikasi sumber dana mencukupi?;
-:Verifikasi status merchant aktif?;
+: Verifikasi sumber dana mencukupi?;
+: Verifikasi status merchant aktif?;
 if (Valid?) then (Ya)
   fork
-    :Potong saldo pengguna / charge sumber dana;
+    : Potong saldo pengguna / charge sumber dana;
   fork again
-    :Tambahkan saldo ke akun merchant;
+    : Tambahkan saldo ke akun merchant;
   end fork
   if (Keduanya sukses?) then (Ya)
-    :Catat transaksi;
-    :Simpan untuk pelaporan;
-    |Sistem Notifikasi|
-    :Kirim notifikasi ke pengguna & merchant;
-    stop
-  else (Gagal)
-    :Rollback (pulihkan saldo / batalkan kredit merchant);
+    : Catat transaksi;
+    : Simpan untuk pelaporan;
+    : Kirim notifikasi ke pengguna & merchant;
     |Frontend|
-    :Notifikasi error transaksi;
-    stop
+    : Tampilkan notifikasi sukses;
+  else (Gagal)
+    : Rollback (pulihkan saldo / batalkan kredit merchant);
+    |Frontend|
+    : Tampilkan notifikasi error transaksi;
   endif
 else (Tidak)
   |Frontend|
-  :Notifikasi gagal (saldo tidak cukup / merchant tidak aktif);
-  stop
+  : Tampilkan notifikasi error transaksi;
 endif
+
+stop
 @enduml

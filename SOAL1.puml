@@ -1,6 +1,7 @@
 @startuml
 title Activity Diagram - Transfer Saldo antar Pengguna
 skin rose
+
 |Pengguna A|
 start
 :Open fitur Transfer;
@@ -21,20 +22,19 @@ if (Input valid?) then (Ya)
     if (Kedua proses sukses?) then (Ya)
       :Catat transaksi;
       :Kirim notifikasi ke A & B;
-      stop
     else (Gagal)
       :Rollback (kembalikan saldo A / batalkan kredit B jika sebagian);
       |Frontend|
       :Tampilkan pesan gagal transfer;
-      stop
     endif
   else (Tidak)
     |Frontend|
     :Tampilkan error verifikasi (saldo kurang / tujuan tidak ada);
-    stop
   endif
 else (Tidak)
   :Tampilkan error input;
-  stop
 endif
+
+|Frontend|
+stop
 @enduml
