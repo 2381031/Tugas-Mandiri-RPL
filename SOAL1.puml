@@ -1,0 +1,40 @@
+@startuml
+title Activity Diagram - Transfer Saldo antar Pengguna
+skin rose
+|Pengguna A|
+start
+:Open fitur Transfer;
+:Input nominal & nomor tujuan (Pengguna B);
+
+|Frontend|
+:Validasi format input (angka? format nomor?);
+if (Input valid?) then (Ya)
+  |Backend|
+  :Verifikasi saldo Pengguna A >= nominal?;
+  :Verifikasi nomor tujuan terdaftar?;
+  if (Verifikasi OK?) then (Ya)
+    fork
+      :Kurangi saldo Pengguna A;
+    fork again
+      :Tambah saldo Pengguna B;
+    end fork
+    if (Kedua proses sukses?) then (Ya)
+      :Catat transaksi;
+      :Kirim notifikasi ke A & B;
+      stop
+    else (Gagal)
+      :Rollback (kembalikan saldo A / batalkan kredit B jika sebagian);
+      |Frontend|
+      :Tampilkan pesan gagal transfer;
+      stop
+    endif
+  else (Tidak)
+    |Frontend|
+    :Tampilkan error verifikasi (saldo kurang / tujuan tidak ada);
+    stop
+  endif
+else (Tidak)
+  :Tampilkan error input;
+  stop
+endif
+@enduml

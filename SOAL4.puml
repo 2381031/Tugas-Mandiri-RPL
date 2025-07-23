@@ -1,0 +1,29 @@
+@startuml
+title Activity Diagram - Transaksi E-Wallet >5jt dengan 2FA
+skin rose
+|Pengguna|
+start
+:Mulai pembayaran (> Rp5 jt);
+
+|Sistem|
+:Minta Password Transaksi & OTP SMS;
+
+|Pengguna|
+:Input Password + OTP;
+
+|Backend|
+:Verifikasi Password?;
+:Verifikasi OTP?;
+if (Keduanya valid?) then (Ya)
+  :Kurangi saldo pengguna;
+  :Catat transaksi;
+  |Frontend|
+  :Notifikasi sukses;
+  stop
+else (Tidak)
+  :Catat log kegagalan (audit/keamanan);
+  |Frontend|
+  :Notifikasi transaksi dibatalkan;
+  stop
+endif
+@enduml
