@@ -1,1 +1,36 @@
 
+@startuml
+title Activity Diagram - Reservasi Dokter Online
+skin rose
+
+|Pasien|
+start
+:Pilih dokter, tanggal, waktu;
+
+|Sistem|
+:Cek ketersediaan jadwal (real-time);
+if (Tersedia?) then (Ya)
+  :Kunci slot 5 menit;
+  |Pasien|
+  :Isi detail & Konfirmasi;
+  if (Konfirmasi <5 menit?) then (Ya)
+    |Sistem|
+    :Simpan reservasi;
+    :Kirim notifikasi ke pasien & dokter;
+    if (Pasien minta pengingat?) then (Ya)
+      :Set pengingat (reminder);
+    else (Tidak)
+      ' Tidak ada pengingat
+    endif
+  else (Tidak)
+    :Lepas slot (timeout 5 menit);
+    |Pasien|
+    :Notifikasi slot kedaluwarsa;
+  endif
+else (Tidak)
+  |Pasien|
+  :Notifikasi jadwal tidak tersedia;
+endif
+
+stop
+@enduml
